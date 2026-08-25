@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getStoredToken, isProtectedRoute } from '../utils/auth'
+import { showToast } from 'vant'
 
 const routes = [
   {
@@ -29,7 +31,8 @@ const routes = [
     component: () => import('../views/AIChat.vue'),
     meta: {
       title: 'AI助手',
-      keepAlive: true
+      keepAlive: true,
+      requiresAuth: true
     }
   },
   {
@@ -38,7 +41,8 @@ const routes = [
     component: () => import('../views/AIChat.vue'),
     meta: {
       title: 'AI助手',
-      keepAlive: true
+      keepAlive: true,
+      requiresAuth: true
     }
   },
   // 兼容旧路由
@@ -56,7 +60,8 @@ const routes = [
     component: () => import('../views/My.vue'),
     meta: {
       title: '我的',
-      keepAlive: true
+      keepAlive: true,
+      requiresAuth: true
     }
   },
   {
@@ -65,7 +70,8 @@ const routes = [
     component: () => import('../views/Profile.vue'),
     meta: {
       title: '个人信息',
-      keepAlive: false
+      keepAlive: false,
+      requiresAuth: true
     }
   },
   {
@@ -92,7 +98,8 @@ const routes = [
     component: () => import('../views/KnowledgeBase.vue'),
     meta: {
       title: '知识库管理',
-      keepAlive: false
+      keepAlive: false,
+      requiresAuth: true
     }
   },
   // 兼容旧路由
@@ -106,7 +113,8 @@ const routes = [
     component: () => import('../views/Sessions.vue'),
     meta: {
       title: '会话管理',
-      keepAlive: true
+      keepAlive: true,
+      requiresAuth: true
     }
   },
   {
@@ -115,7 +123,8 @@ const routes = [
     component: () => import('../views/NoteList.vue'),
     meta: {
       title: '笔记',
-      keepAlive: true
+      keepAlive: true,
+      requiresAuth: true
     }
   },
   {
@@ -124,7 +133,8 @@ const routes = [
     component: () => import('../views/NoteEditor.vue'),
     meta: {
       title: '编辑笔记',
-      keepAlive: false
+      keepAlive: false,
+      requiresAuth: true
     }
   },
   {
@@ -133,7 +143,8 @@ const routes = [
     component: () => import('../views/DailyReview.vue'),
     meta: {
       title: '每日回顾',
-      keepAlive: false
+      keepAlive: false,
+      requiresAuth: true
     }
   },
 ]
@@ -144,11 +155,22 @@ const router = createRouter({
 })
 
 // 全局前置守卫
-router.beforeEach((to, from, next) => {
-  // 设置页面标题
+router.beforeEach((to, _from, next) => {
   document.title = to.meta.title || 'AI Second Brain'
 
-  // 直接允许访问所有页面
+  const token = getStoredToken()
+
+  if (to.name === 'Login' && token) {
+    next('/notes')
+    return
+  }
+
+  if (isProtectedRoute(to) && !token) {
+    showToast('请先登录')
+    next({ name: 'Login', query: { redirect: to.fullPath } })
+    return
+  }
+
   next()
 })
 

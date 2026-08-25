@@ -12,7 +12,7 @@ RAG NoteBook 是一个面向个人学习场景的智能笔记助手，将 **Mark
 1. 笔记、课件和资料分散在不同位置，仅靠关键词难以发现它们之间的语义关联。
 2. 笔记保存后缺少主动回顾机制，知识难以长期沉淀。
 
-本仓库维护 Vue 3 + Django 用户服务版本，基于 [RMA-MUN/RAGNotebook](https://github.com/RMA-MUN/RAGNotebook) v2.0.0 继续开发。完整演进背景见[项目变迁说明](./docs/project_develop.md)。
+本仓库维护 Vue 3 + Django 用户服务版本，基于 [RMA-MUN/RAGNotebook](https://github.com/RMA-MUN/RAGNotebook) v2.0.0 继续开发。完整演进背景见[项目变迁说明](./docs/project_develop.md)，希望系统学习代码的同学可参考[四周项目学习路线](./docs/project_learning_roadmap.md)。
 
 ## 项目总览
 
@@ -77,7 +77,7 @@ flowchart TD
     A[读取当前笔记全文] --> B[全文作为 Query]
     B --> C[notes_collection<br/>召回 Top-K + 1]
     B --> D[rag_collection<br/>召回 Top-K]
-    C --> E[排除当前 note_id]
+    C --> E[按 user_id 过滤<br/>并排除当前 note_id]
     D --> F[按 user_id 过滤知识库]
     E --> G[合并两类候选]
     F --> G
@@ -85,7 +85,7 @@ flowchart TD
     H --> I[返回 Top-K<br/>标注 note / knowledge_base 来源]
 ```
 
-系统使用当前笔记全文而不是少量关键词作为 Query：先从 `notes_collection` 召回语义相近的其他笔记并排除当前笔记，再从 `rag_collection` 召回相关知识库切片，最后合并候选并按向量距离排序（距离越小表示越相关）。这样，即使不同资料没有共享明显关键词，也能够被关联发现与复用。
+系统使用当前笔记全文而不是少量关键词作为 Query：先从 `notes_collection` 召回当前用户语义相近的其他笔记并排除当前笔记，再从 `rag_collection` 召回当前用户的相关知识库切片，最后合并候选并按向量距离排序（距离越小表示越相关）。这样，即使不同资料没有共享明显关键词，也能够被关联发现与复用。
 
 主要代码入口：
 
@@ -187,11 +187,9 @@ POST /review/done/{note_id}
 
 ### 克隆项目
 
-创建自己的 GitHub 仓库后，将下面的 `YOUR_GITHUB_USERNAME` 替换为你的 GitHub 用户名：
-
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/LangChain-RAG-FastAPI-Service.git
-cd LangChain-RAG-FastAPI-Service
+git clone git@github.com:jinjiecainiao/rag-notebook.git
+cd rag-notebook
 ```
 
 ### 安装依赖

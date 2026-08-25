@@ -66,6 +66,9 @@ langchain-*/
 # ChromaDB
 chromadb/
 
+# Downloaded model artifacts
+backend/models/
+
 # Jupyter notebooks
 .ipynb_checkpoints/
 

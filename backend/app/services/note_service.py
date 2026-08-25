@@ -297,6 +297,7 @@ class NoteService:
                 self._notes_store.similarity_search_with_score,
                 note.content,
                 k=top_k + 1,  # 多取一个，排除自身
+                filter={"user_id": user_id, "doc_type": "note"},
             )
             for doc, score in note_docs:
                 meta_note_id = doc.metadata.get("note_id", "")

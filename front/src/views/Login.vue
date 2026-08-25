@@ -61,6 +61,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { showToast } from 'vant';
 import { useUserStore } from '../store/user';
+import { waitForStoredToken } from '../utils/auth';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -90,7 +91,8 @@ const onSubmit = async (values) => {
         message: result.message
       });
       
-      router.push('/');
+      await waitForStoredToken();
+      router.push(router.currentRoute.value.query.redirect || '/');
     } else {
       showToast({
         type: 'fail',

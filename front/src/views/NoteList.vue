@@ -68,6 +68,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { apiConfig } from '../config/api'
+import { authHeaders, getStoredToken, handleUnauthorizedResponse } from '../utils/auth'
 import { useUserStore } from '../store/user'
 import TagBadge from '../components/TagBadge.vue'
 import TabBar from '../components/TabBar.vue'
@@ -95,14 +96,11 @@ const categories = [
 ]
 
 /** 获取 token */
-const token = computed(() => userStore.token)
+const token = computed(() => userStore.token || getStoredToken())
 
 /** 请求头 */
 function getHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token.value}`,
-  }
+  return authHeaders(token.value)
 }
 
 /** 截取笔记预览文本（移除 Markdown 标记，取前 100 字） */
@@ -151,6 +149,7 @@ async function fetchNotes(isRefresh = false) {
   try {
     const url = `${apiConfig.endpoints.noteList}?${params.toString()}`
     const res = await fetch(url, { headers: getHeaders() })
+    if (handleUnauthorizedResponse(res, { currentPath: router.currentRoute.value.fullPath })) return
     const json = await res.json()
     if (json.code === 200) {
       const newNotes = json.data.notes || []
@@ -178,6 +177,7 @@ async function handleSearch() {
   try {
     const url = `${apiConfig.endpoints.noteSearch}?q=${encodeURIComponent(searchQuery.value)}`
     const res = await fetch(url, { headers: getHeaders() })
+    if (handleUnauthorizedResponse(res, { currentPath: router.currentRoute.value.fullPath })) return
     const json = await res.json()
     if (json.code === 200) {
       notes.value = json.data.notes || []

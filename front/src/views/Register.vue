@@ -196,9 +196,8 @@ const handleRegister = async () => {
         position: 'top'
       });
       
-      // 注册成功后跳转到对话页面
       setTimeout(() => {
-        router.push('/aichat');
+        router.push('/login');
       }, 1500);
     } else {
       showToast({

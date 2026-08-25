@@ -29,31 +29,6 @@ export const useUserStore = defineStore('user', {
   actions: {
     async login(userData) {
       try {
-        const TEST_USER = {
-          username: 'test',
-          password: '666666',
-          token: 'test_token_for_unlogin',
-          user: {
-            id: 1,
-            username: 'test',
-            email: 'test@example.com',
-            bio: '测试用户'
-          }
-        };
-
-        if (userData.username === TEST_USER.username && userData.password === TEST_USER.password) {
-          localStorage.setItem('jwt_token', TEST_USER.token);
-          
-          this.userInfo = TEST_USER.user;
-          this.token = TEST_USER.token;
-          this.isLogin = true;
-          
-          return {
-            success: true,
-            message: '测试用户登录成功'
-          };
-        }
-
         const response = await axios.post(apiConfig.endpoints.login, {
           username: userData.username,
           password: userData.password
@@ -293,20 +268,8 @@ export const useUserStore = defineStore('user', {
         
         // 根据后端返回的数据格式判断注册是否成功
         // 后端返回格式: { status: 201, message: "注册成功", user: {...}, token: "..." }
-        if (response.data.status === 201 && response.data.token) {
-          // 注册成功
-          const token = response.data.token;
-          const userInfo = response.data.user;
-          
-          // 保存token到localStorage
-          localStorage.setItem('jwt_token', token);
-          
-          // 更新store状态
-          this.userInfo = userInfo;
-          this.token = token;
-          this.isLogin = true;
-          
-          console.log('注册成功，已保存用户信息和token');
+        if (response.data.status === 201) {
+          console.log('注册成功');
           return {
             success: true,
             message: response.data.message || '注册成功'

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from langchain_community.chat_models.tongyi import ChatTongyi
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models import BaseChatModel
+from langchain_openai import ChatOpenAI
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 
 from app.core.logger_handler import logger
@@ -64,7 +65,7 @@ class BaseModelFactory(ABC):
 
 
 class ChatModelFactory(BaseModelFactory):
-    """聊天模型工厂 - 支持阿里云百炼和Ollama"""
+    """聊天模型工厂 - 支持阿里云百炼、Ollama 和 DeepSeek"""
     
     def generator(self) -> Optional[Embeddings | BaseChatModel]:
         """根据LLM_TYPE生成对应的聊天模型"""
@@ -97,9 +98,24 @@ class ChatModelFactory(BaseModelFactory):
                 streaming=True,
                 top_p=0.7,
             )
+
+        elif llm_type == "DEEPSEEK":
+            model_name = os.getenv("DEEPSEEK_MODEL_NAME", os.getenv("CHAT_MODEL_NAME", "deepseek-v4-flash"))
+            api_key = os.getenv("DEEPSEEK_API_KEY")
+            base_url = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+
+            logger.info(f"📦 ChatModel 使用DeepSeek模型: {model_name}, 地址: {base_url}")
+
+            return ChatOpenAI(
+                model=model_name,
+                api_key=api_key,
+                base_url=base_url,
+                streaming=True,
+                top_p=0.7,
+            )
         
         else:
-            raise ValueError(f"不支持的LLM_TYPE: {llm_type}，可选值: ALIYUN, OLLAMA")
+            raise ValueError(f"不支持的LLM_TYPE: {llm_type}，可选值: ALIYUN, OLLAMA, DEEPSEEK")
 
 
 class EmbedModelFactory(BaseModelFactory):
@@ -149,8 +165,18 @@ class VisionModelFactory(BaseModelFactory):
 
     def generator(self) -> Optional[BaseChatModel]:
         """根据VISION_MODEL_TYPE生成对应的视觉模型"""
-        # 未设置 VISION_MODEL_TYPE 时，默认跟随 LLM_TYPE（保持向后兼容）
-        vision_type = os.getenv("VISION_MODEL_TYPE", "").upper() or os.getenv("LLM_TYPE", "ALIYUN").upper()
+        # 视觉模型需要真正支持图片输入。DeepSeek 当前在本项目中仅作为文本模型，
+        # 因此 LLM_TYPE=DEEPSEEK 且未单独配置视觉模型时，默认回退到 Ollama。
+        configured_vision_type = os.getenv("VISION_MODEL_TYPE", "").upper()
+        llm_type = os.getenv("LLM_TYPE", "ALIYUN").upper()
+        vision_type = configured_vision_type or (
+            llm_type if llm_type in {"ALIYUN", "OLLAMA"} else "OLLAMA"
+        )
+
+        if not configured_vision_type and llm_type == "DEEPSEEK":
+            logger.warning(
+                "VISION_MODEL_TYPE 未配置；DeepSeek 仅用于文本模型，视觉模型回退到 Ollama"
+            )
 
         if vision_type == "OLLAMA":
             model_name = os.getenv("VISION_OLLAMA_MODEL_NAME") or os.getenv("OLLAMA_MODEL_NAME") or "qwen-vl:7b"

@@ -7,36 +7,30 @@
     />
 
     <div class="aboutus-content">
-      <h2 class="project-title">LangChain RAG FastAPI Service</h2>
+      <h2 class="project-title">RAG NoteBook 智能笔记助手</h2>
       <p class="project-intro">
-        基于 LangChain+FastAPI+Django的RAG对话服务，为 LLM 应用提供开箱即用的检索增强能力，适配智能问答、企业知识库等场景。
+        将 Markdown 笔记、课程资料知识库、RAG Agent 问答、跨源语义关联和间隔回顾统一到一套系统中。
       </p>
 
       <van-cell-group inset class="info-group">
-        <van-cell class="contact-cell" title="官方GitHub" is-link @click="openLink('https://github.com/RMA-MUN/LangChain-RAG-FastAPI-Service')">
+        <van-cell class="contact-cell" title="项目 GitHub" is-link @click="openLink('https://github.com/jinjiecainiao/rag-notebook')">
           <template #icon>
             <div class="contact-icon github-icon">
               <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
             </div>
           </template>
           <template #label>
-            <span class="link-text">github.com/RMA-MUN/LangChain-RAG-FastAPI-Service</span>
+            <span class="link-text">github.com/jinjiecainiao/rag-notebook</span>
           </template>
         </van-cell>
-        <van-cell class="contact-cell" title="作者邮箱" value="n3032747608@163.com">
+        <van-cell class="contact-cell" title="上游项目" is-link @click="openLink('https://github.com/RMA-MUN/RAGNotebook')">
           <template #icon>
-            <div class="contact-icon email-icon">
-              <van-icon name="envelop-o" size="14" />
+            <div class="contact-icon github-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
             </div>
           </template>
-        </van-cell>
-        <van-cell class="contact-cell" title="作者QQ" value="3032747608">
-          <template #icon>
-            <div class="contact-icon qq-icon">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-              </svg>
-            </div>
+          <template #label>
+            <span class="link-text">RMA-MUN/RAGNotebook · v2.0.0</span>
           </template>
         </van-cell>
       </van-cell-group>
@@ -122,16 +116,6 @@ const openLink = (url) => {
 .github-icon {
   background-color: #24292e;
   color: #fff;
-}
-
-.email-icon {
-  background-color: #7D9B7A;
-  color: #fff;
-}
-
-.qq-icon {
-  background-color: #EBE0D0;
-  color: var(--color-text);
 }
 
 .contact-cell {
